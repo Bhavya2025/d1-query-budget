@@ -2,6 +2,7 @@
 
 - Public demo: https://d1.bhavyakumar.ca
 - Public source: https://github.com/Bhavya2025/d1-query-budget
+- Frontend redesign published as Worker version 6e1a0366-7208-483b-93aa-14a51cce8267. Three live scenarios verified through the new UI; desktop/mobile, keyboard, recorded mode and controlled error recovery reviewed. See docs/frontend-review.md and evidence/frontend/review.json for observations and limits.
 - Custom domain connected October 19, 2026. HTTPS returned 200 with successful certificate verification. A same-origin unchanged comparison passed the CLI, and a live browser missing-index run reproduced 20 versus 1,100 reads with identical results. The original workers.dev address remains enabled. Wrangler configuration includes the custom hostname; its dry-run build passed.
 - First successful CI run: https://github.com/Bhavya2025/d1-query-budget/actions/runs/39324281511
 - Typechecking and all 36 automated tests passed locally. CI also performs a dry-run Worker build without Cloudflare credentials.

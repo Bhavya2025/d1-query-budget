@@ -4,6 +4,8 @@
 
 [Live experiment](https://d1.bhavyakumar.ca) · [How it works](docs/architecture.md) · [Measured evidence](evidence/README.md)
 
+![D1 query workbench](evidence/frontend/desktop-live.jpg)
+
 A TypeScript experiment that measures Cloudflare D1 row reads, checks full result correctness, and rejects queries that exceed a declared budget. Run three scenarios in the browser, inspect the SQL and query plans, then download a report and verify it with the CLI.
 
 | Actual remote D1 run | Baseline reads | Candidate reads | Result |

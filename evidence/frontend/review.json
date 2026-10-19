@@ -1,0 +1,65 @@
+{
+  "contract": "../../plans/frontend-design.md",
+  "targetViewports": [
+    "1440x900",
+    "390x844"
+  ],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Native labelled radios, buttons and details inspected. Keyboard Tab exposed the skip link; Enter moved to the lab; ArrowRight selected unchanged with a visible parent outline. A keyboard-triggered production request restored focus to Run with a visible outline. Polite atomic verdict and alert markup reviewed. Main text contrast 7.25:1 or higher on panel; button 13.32:1. Production CSSOM contains the reduced-motion override. No screen-reader session or OS reduced-motion emulation was performed."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "1440x900 shows run controls, measured counters and decision in the first viewport. 390x844 has stacked controls, readable results and no horizontal page overflow (client/scroll width 390/390). Expanded code panels scroll internally. 720x450 reflow also inspected (705/705 client/scroll width including scrollbar). This is a reflow proxy; actual 200% browser zoom was not independently confirmed."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Local controlled 3.5-second response showed Measuring, disabled radios/actions, blank stable metrics and Checking the Query status; loading.jpg."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "Fresh load shows dashes, Ready to Measure, disabled Export and enabled Run/Recorded controls. Deep-link reload selects unchanged without executing D1."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Local test-only HTTP 503 displayed actionable alert, no stale metrics and restored controls; recorded run then loaded the original timestamp successfully. error.jpg."
+    },
+    "partial": {
+      "status": "not-applicable",
+      "reason": "The endpoint is atomic for all five query results and rejects incomplete measurements. Frontend shape validation plus catch clears incomplete render attempts rather than exposing a partial success."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Published custom-domain browser runs: missing-index 20/1100 and budget failure; unchanged 20/20 pass; wrong-result 20/1 correctness failure. All have live provenance. Recorded report separately labelled with original capture time. Fonts loaded and production browser error/warning log empty."
+    },
+    "permission": {
+      "status": "not-applicable",
+      "reason": "The public fixed-query demo requires no visitor login, permission grant or credentials; authentication is only a deployment concern."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1440x900",
+      "artifact": "desktop-live.jpg",
+      "observation": "Published live missing-index comparison with 20 vs 1100 reads, same results, shared scale and 100-read markers; desktop workbench layout."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "mobile-live.jpg",
+      "observation": "Published wrong-result comparison, controls stacked, 20 vs 1 reads, correctness rejection and visible keyboard focus."
+    },
+    {
+      "viewport": "720x450",
+      "artifact": "reflow-720.jpg",
+      "observation": "Narrow desktop reflow proxy with stacked scenario controls, no horizontal page overflow."
+    }
+  ],
+  "deploymentVersion": "6e1a0366-7208-483b-93aa-14a51cce8267",
+  "guidelinesSource": "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md",
+  "limitations": [
+    "Manual Chrome review, not a complete assistive-technology audit.",
+    "Reduced-motion CSS inspected in the loaded stylesheet; OS media preference not emulated.",
+    "Actual browser zoom shortcuts did not change the viewport; narrow reflow tested instead."
+  ]
+}

@@ -5,289 +5,422 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Same results, different database work. A live Cloudflare D1 experiment with measured query budgets and correctness checks."
+      content="Measure the work behind a SQL query. A live Cloudflare D1 workbench for result correctness and row-read budgets."
     />
-    <meta name="theme-color" content="#f7f6f2" />
-    <title>D1 Query Budget — Same results. Less work.</title>
+    <meta name="theme-color" content="#11191f" />
+    <title>D1 Query Budget — Measure the Work Behind the Query</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
   </head>
   <body>
-    <a class="skip" href="#experiment">Skip to experiment</a>
-    <header class="header">
-      <a class="brand" href="/" aria-label="D1 Query Budget home"
-        ><span class="logo" aria-hidden="true">≋</span> D1 Query Budget<span
-          class="version"
-          >v0.1</span
-        ></a
+    <a class="skip" href="#experiment">Skip to Query Lab</a>
+    <header class="header wrap">
+      <a class="brand" href="/" aria-label="D1 Query Budget home" translate="no"
+        ><span class="logo" aria-hidden="true"><i></i><i></i><i></i></span
+        >D1<span class="brand-detail">/ Query Budget</span
+        ><span class="version">v0.1</span></a
       >
       <nav aria-label="Main">
-        <a href="#how-it-works">How it works</a
-        ><a
-          href="https://github.com/Bhavya2025/d1-query-budget"
-          target="_blank"
-          rel="noopener"
-          >GitHub ↗</a
+        <a href="#how-it-works">The Method</a
+        ><a href="https://github.com/Bhavya2025/d1-query-budget"
+          >Source Code <span aria-hidden="true">↗</span></a
         >
       </nav>
     </header>
-    <main>
-      <section class="hero">
-        <div class="eyebrow">
-          <span class="dot"></span> A CLOUDFLARE D1 EXPERIMENT
+    <main class="wrap">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="dot"></span> Cloudflare D1 / Query Workbench
+          </p>
+          <h1 id="page-title">
+            The right answer.<br /><span>At what cost?</span>
+          </h1>
+          <p class="lede">
+            Same results can take very different work.<br
+              class="desktop-break"
+            />
+            Compare row reads. Check correctness. Catch the regression.
+          </p>
         </div>
-        <h1>Same results.<br /><span>Very different work.</span></h1>
-        <p class="lede">
-          A query can return the right answer and still read far too much data.
-          Measure the difference. Check correctness. Set a budget.
-        </p>
-        <div class="hero-bottom">
-          <a class="primary" href="#experiment"
-            >Explore the experiment <span aria-hidden="true">↓</span></a
-          ><span class="quiet"
-            >Real D1 queries · Synthetic data · Open source</span
-          >
-        </div>
+        <aside class="hero-aside" aria-label="How a comparison works">
+          <span class="eyebrow">Inside the Experiment</span>
+          <ol class="pipeline">
+            <li><span>01</span> Query <i aria-hidden="true">↗</i></li>
+            <li><span>02</span> Measure <i aria-hidden="true">↗</i></li>
+            <li><span>03</span> Verify <i aria-hidden="true">✓</i></li>
+          </ol>
+          <p>Real D1 queries.<br />Reproducible, synthetic data.</p>
+        </aside>
       </section>
       <section
         id="experiment"
         class="experiment"
         aria-labelledby="experiment-title"
+        tabindex="-1"
       >
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">01 / QUERY LAB</span>
-            <h2 id="experiment-title">Put a change to the test.</h2>
-          </div>
-          <span class="dataset-tag">1,000 orders · 10 merchants</span>
+        <div class="lab-heading">
+          <h2 id="experiment-title">
+            <span class="section-index">01 /</span> Query Lab
+          </h2>
+          <span class="dataset-tag"
+            >1,000 orders <span aria-hidden="true">/</span> 10 merchants</span
+          >
         </div>
-        <fieldset class="scenarios">
-          <legend>Choose a scenario</legend>
-          <label class="scenario"
-            ><input
-              type="radio"
-              name="scenario"
-              value="missing-index"
-              checked
-            /><span class="scenario-top"
-              ><span class="scenario-number">01</span
-              ><strong>Missing index</strong
-              ><span class="scenario-arrow">↗</span></span
-            ><span class="scenario-description"
-              >Same 20 orders. More rows scanned.</span
-            ></label
-          >
-          <label class="scenario"
-            ><input type="radio" name="scenario" value="unchanged" /><span
-              class="scenario-top"
-              ><span class="scenario-number">02</span
-              ><strong>Unchanged query</strong
-              ><span class="scenario-arrow">→</span></span
-            ><span class="scenario-description"
-              >A control: same query, same results.</span
-            ></label
-          >
-          <label class="scenario"
-            ><input type="radio" name="scenario" value="wrong-result" /><span
-              class="scenario-top"
-              ><span class="scenario-number">03</span
-              ><strong>Cheap but wrong</strong
-              ><span class="scenario-arrow">≠</span></span
-            ><span class="scenario-description"
-              >Read less by returning too little.</span
-            ></label
-          >
-        </fieldset>
-        <div class="run-bar">
-          <p id="scenario-description">
-            Fetch merchant #1’s latest 20 orders, with and without a composite
-            index.
-          </p>
-          <button class="primary" id="run">
-            Run on D1 <span aria-hidden="true">↗</span>
-          </button>
-        </div>
-        <p class="error" id="error" role="alert" hidden></p>
-        <div class="results" id="results" aria-busy="false">
-          <div class="result-toolbar">
-            <span id="source-label" class="source-label">READY TO MEASURE</span
-            ><span id="time-label" class="quiet">Nothing has run yet.</span>
-          </div>
-          <div class="metrics-grid">
-            <article class="metric-card">
-              <div class="metric-title">
-                <span class="dot baseline-dot"></span> BASELINE
-                <span class="chip">Indexed</span>
-              </div>
-              <div class="metric-number" id="baseline-reads">—</div>
-              <span class="metric-caption">rows read</span>
-              <div class="bar-track" aria-hidden="true">
-                <span id="baseline-bar" class="bar baseline-bar"></span>
-              </div>
-              <div class="metric-foot">
-                <span
-                  >Orders returned
-                  <strong id="baseline-returned">—</strong></span
-                ><span
-                  >Rows written <strong id="baseline-written">—</strong></span
-                >
-              </div>
-            </article>
-            <article class="metric-card">
-              <div class="metric-title">
-                <span class="dot candidate-dot"></span> CANDIDATE
-                <span class="chip" id="candidate-label">No index</span>
-              </div>
-              <div class="metric-number" id="candidate-reads">—</div>
-              <span class="metric-caption">rows read</span>
-              <div class="bar-track" aria-hidden="true">
-                <span id="candidate-bar" class="bar candidate-bar"></span>
-              </div>
-              <div class="metric-foot">
-                <span
-                  >Orders returned
-                  <strong id="candidate-returned">—</strong></span
-                ><span
-                  >Rows written <strong id="candidate-written">—</strong></span
-                >
-              </div>
-            </article>
-          </div>
-          <div class="verdict" id="verdict" role="status" aria-live="polite">
-            <span class="verdict-symbol" id="verdict-symbol">○</span>
-            <div>
-              <strong id="verdict-title"
-                >The answer is only half the test.</strong
+        <div class="workbench">
+          <div class="controls">
+            <fieldset class="scenarios">
+              <legend>Choose Your Change</legend>
+              <label class="scenario"
+                ><input
+                  type="radio"
+                  name="scenario"
+                  value="missing-index"
+                  checked
+                /><span class="scenario-copy"
+                  ><span class="scenario-top"
+                    ><span class="scenario-number">01</span
+                    ><strong>Missing Index</strong
+                    ><span class="scenario-arrow" aria-hidden="true"
+                      >↗</span
+                    ></span
+                  ><span class="scenario-description"
+                    >Same answer.<br />More rows scanned.</span
+                  ></span
+                ></label
               >
-              <p id="verdict-message">
-                Run a comparison to check both the returned orders and the work
-                needed to find them.
+              <label class="scenario"
+                ><input type="radio" name="scenario" value="unchanged" /><span
+                  class="scenario-copy"
+                  ><span class="scenario-top"
+                    ><span class="scenario-number">02</span
+                    ><strong>Unchanged Query</strong
+                    ><span class="scenario-arrow" aria-hidden="true"
+                      >→</span
+                    ></span
+                  ><span class="scenario-description"
+                    >The control.<br />Same query, same results.</span
+                  ></span
+                ></label
+              >
+              <label class="scenario"
+                ><input
+                  type="radio"
+                  name="scenario"
+                  value="wrong-result"
+                /><span class="scenario-copy"
+                  ><span class="scenario-top"
+                    ><span class="scenario-number">03</span
+                    ><strong>Cheap but Wrong</strong
+                    ><span class="scenario-arrow" aria-hidden="true"
+                      >≠</span
+                    ></span
+                  ><span class="scenario-description"
+                    >Fewer reads.<br />An incomplete answer.</span
+                  ></span
+                ></label
+              >
+            </fieldset>
+            <div class="fixture-note">
+              <span class="eyebrow">Controlled Fixture</span>
+              <p>
+                Two identical tables.<br />One composite index.<br />A 100-row
+                read budget.
               </p>
+              <span class="fixture-stamp"
+                ><span aria-hidden="true">⌁</span> Read-only queries</span
+              >
             </div>
-            <span class="budget-tag">Budget: <strong>100 rows</strong></span>
           </div>
-          <div class="evidence-actions">
-            <p id="comparison-note">
-              Measurements appear after a run. No example numbers are
-              pre-filled.
-            </p>
-            <button class="text-button" id="download" disabled>
-              Download report ↓
-            </button>
+          <div class="workspace">
+            <div class="run-bar">
+              <div>
+                <span class="eyebrow">Selected Experiment</span>
+                <p id="scenario-description">
+                  Fetch merchant #1’s latest 20 orders, with and without a
+                  composite index.
+                </p>
+              </div>
+              <button class="primary" id="run">
+                <span class="run-icon" aria-hidden="true">↗</span
+                ><span id="run-label">Run on D1</span>
+              </button>
+            </div>
+            <p class="error" id="error" role="alert" hidden></p>
+            <div
+              class="results"
+              id="results"
+              aria-busy="false"
+              data-state="empty"
+            >
+              <div class="result-toolbar">
+                <span id="source-label" class="source-label"
+                  >Ready to Measure</span
+                ><time id="time-label">No measurement yet</time>
+              </div>
+              <div class="metrics-grid">
+                <article class="metric-card baseline">
+                  <h3 class="metric-title">
+                    <span class="series-mark" aria-hidden="true">A</span>
+                    Baseline <span class="chip">Indexed</span>
+                  </h3>
+                  <div class="metric-value">
+                    <span class="metric-number" id="baseline-reads">—</span
+                    ><span class="metric-caption">rows read</span>
+                  </div>
+                  <div class="bar-track" aria-hidden="true">
+                    <span id="baseline-bar" class="bar baseline-bar"></span
+                    ><span class="budget-marker"></span>
+                  </div>
+                  <div class="metric-foot">
+                    <span
+                      >Orders returned
+                      <strong id="baseline-returned">—</strong></span
+                    ><span
+                      >Rows written
+                      <strong id="baseline-written">—</strong></span
+                    >
+                  </div>
+                </article>
+                <article class="metric-card candidate">
+                  <h3 class="metric-title">
+                    <span class="series-mark" aria-hidden="true">B</span>
+                    Candidate
+                    <span class="chip" id="candidate-label">No index</span>
+                  </h3>
+                  <div class="metric-value">
+                    <span class="metric-number" id="candidate-reads">—</span
+                    ><span class="metric-caption">rows read</span>
+                  </div>
+                  <div class="bar-track" aria-hidden="true">
+                    <span id="candidate-bar" class="bar candidate-bar"></span
+                    ><span class="budget-marker"></span>
+                  </div>
+                  <div class="metric-foot">
+                    <span
+                      >Orders returned
+                      <strong id="candidate-returned">—</strong></span
+                    ><span
+                      >Rows written
+                      <strong id="candidate-written">—</strong></span
+                    >
+                  </div>
+                </article>
+              </div>
+              <div class="chart-key">
+                <span><i aria-hidden="true"></i> Budget: 100 reads</span
+                ><span id="scale-label">Shared scale · awaiting data</span>
+              </div>
+              <div
+                class="verdict"
+                id="verdict"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <span
+                  class="verdict-symbol"
+                  id="verdict-symbol"
+                  aria-hidden="true"
+                  >○</span
+                >
+                <div>
+                  <strong id="verdict-title">Ready When You Are</strong>
+                  <p id="verdict-message">
+                    Run the experiment to check the answer and the work behind
+                    it.
+                  </p>
+                </div>
+                <span class="decision-label">Decision</span>
+              </div>
+              <div class="evidence-actions">
+                <p id="comparison-note">Measured results will appear here.</p>
+                <button class="text-button" id="download" disabled>
+                  Export JSON <span aria-hidden="true">↓</span>
+                </button>
+              </div>
+            </div>
+            <div class="recorded-row">
+              <button id="recorded" class="text-button">
+                View a Recorded Run <span aria-hidden="true">↗</span></button
+              ><span class="quiet"
+                >No live query. Original timestamp included.</span
+              >
+            </div>
           </div>
-        </div>
-        <div class="recorded-row">
-          <span>Prefer a quick look?</span
-          ><button id="recorded" class="text-button">
-            View a recorded D1 run</button
-          ><span class="quiet"
-            >Clearly timestamped. Never presented as live.</span
-          >
         </div>
         <details class="inspect" id="inspect">
           <summary>
-            Inspect the evidence <span>SQL, query plans & returned orders</span>
+            <span class="inspect-title"
+              ><span class="section-index">&lt;/&gt;</span> Inspect the
+              Evidence</span
+            ><span class="summary-hint"
+              >SQL / query plans / returned orders</span
+            ><span class="disclosure-icon" aria-hidden="true">+</span>
           </summary>
           <div id="inspection-empty" class="inspection-empty">
-            Run a comparison or load a recorded report first.
+            Run a comparison or load a recorded report to inspect its evidence.
           </div>
           <div id="inspection-content" hidden>
             <div class="sql-grid">
               <div>
-                <h3>Baseline query</h3>
-                <pre id="baseline-sql"></pre>
-                <h3>Query plan</h3>
-                <pre id="baseline-plan"></pre>
+                <h3>
+                  <span class="series-mark" aria-hidden="true">A</span> Baseline
+                  Query
+                </h3>
+                <pre
+                  id="baseline-sql"
+                  tabindex="0"
+                  aria-label="Baseline SQL"
+                  translate="no"
+                ></pre>
+                <h3>Query Plan</h3>
+                <pre
+                  id="baseline-plan"
+                  tabindex="0"
+                  aria-label="Baseline query plan"
+                  translate="no"
+                ></pre>
               </div>
               <div>
-                <h3>Candidate query</h3>
-                <pre id="candidate-sql"></pre>
-                <h3>Query plan</h3>
-                <pre id="candidate-plan"></pre>
+                <h3>
+                  <span class="series-mark" aria-hidden="true">B</span>
+                  Candidate Query
+                </h3>
+                <pre
+                  id="candidate-sql"
+                  tabindex="0"
+                  aria-label="Candidate SQL"
+                  translate="no"
+                ></pre>
+                <h3>Query Plan</h3>
+                <pre
+                  id="candidate-plan"
+                  tabindex="0"
+                  aria-label="Candidate query plan"
+                  translate="no"
+                ></pre>
               </div>
             </div>
-            <p class="quiet">
-              Bound parameter: merchant_id = 1. Plans explain the measurement;
-              their text does not determine pass/fail.
+            <p class="quiet inspection-note">
+              Bound parameter: <code translate="no">merchant_id = 1</code>.
+              Plans explain the measurement; their text does not determine
+              pass/fail.
             </p>
             <details>
               <summary>
-                Returned orders <span>Full, bounded result arrays</span>
+                Returned Orders
+                <span class="summary-hint">Full, ordered result arrays</span
+                ><span class="disclosure-icon" aria-hidden="true">+</span>
               </summary>
-              <pre id="returned-orders"></pre>
+              <pre
+                id="returned-orders"
+                tabindex="0"
+                aria-label="Returned orders JSON"
+                translate="no"
+              ></pre>
             </details>
             <details>
               <summary>
-                Raw report <span>Provider metadata & provenance</span>
+                Raw Report
+                <span class="summary-hint">Metadata &amp; provenance</span
+                ><span class="disclosure-icon" aria-hidden="true">+</span>
               </summary>
-              <pre id="raw-report"></pre>
+              <pre
+                id="raw-report"
+                tabindex="0"
+                aria-label="Raw report JSON"
+                translate="no"
+              ></pre>
             </details>
           </div>
         </details>
         <p class="scope-note">
-          <strong>Prototype scope.</strong> This demo compares fixed scenarios.
-          The CLI checks saved reports; offline CI tests the checker. It does
-          not automatically benchmark arbitrary pull-request changes.
+          <span class="scope-tag">Prototype</span
+          ><span
+            >Three fixed scenarios. A CLI that verifies saved reports.
+            <strong
+              >Not an automatic benchmark for arbitrary pull requests.</strong
+            ></span
+          >
         </p>
       </section>
-      <section id="how-it-works" class="explanation">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">02 / BEHIND THE NUMBERS</span>
-            <h2>Correct is necessary.<br />Efficient deserves a test, too.</h2>
-          </div>
+      <section
+        id="how-it-works"
+        class="explanation"
+        aria-labelledby="method-title"
+      >
+        <div class="method-intro">
+          <span class="eyebrow">02 / The Method</span>
+          <h2 id="method-title">
+            Correct is necessary.<br /><span>Efficient deserves a test.</span>
+          </h2>
+          <p>
+            A small experiment with a strict rule:<br />a cheaper wrong answer
+            never passes.
+          </p>
         </div>
         <div class="steps">
           <article>
             <span class="step-number">01</span>
-            <h3>Keep the data identical.</h3>
-            <p>
-              Two copies of 1,000 synthetic orders. Same merchant, same sorting,
-              same expected results. One copy has a lookup index.
-            </p>
+            <div>
+              <h3>Hold the Data Constant</h3>
+              <p>
+                Two copies of 1,000 synthetic orders. Same merchant, same
+                sorting, same expected results. One table has a lookup index.
+              </p>
+            </div>
           </article>
           <article>
             <span class="step-number">02</span>
-            <h3>Measure actual work.</h3>
-            <p>
-              D1 returns the number of rows it read. That includes work to find
-              the answer, not just the orders displayed on the page.
-            </p>
+            <div>
+              <h3>Measure the Database Work</h3>
+              <p>
+                D1 reports how many rows it reads to find the answer. That can
+                be far more than the number of orders it returns.
+              </p>
+            </div>
           </article>
           <article>
             <span class="step-number">03</span>
-            <h3>Make a checkable decision.</h3>
-            <p>
-              Compare the full returned orders, then check the candidate against
-              a 100-row budget. A cheaper, incorrect answer still fails.
-            </p>
+            <div>
+              <h3>Check Both Sides of the Tradeoff</h3>
+              <p>
+                Compare every returned field and its order. Then check reads
+                against the 100-row budget. Both checks must pass.
+              </p>
+            </div>
           </article>
         </div>
-        <div class="tradeoff">
-          <span class="eyebrow">THE TRADEOFF</span>
-          <p>
-            An index can reduce reads, but adds storage and work when data
-            changes. This is a controlled read experiment—not a production
-            benchmark, a dollar-savings estimate, or a spending cap.
-          </p>
-          <a
-            href="https://developers.cloudflare.com/d1/best-practices/use-indexes/"
-            target="_blank"
-            rel="noopener"
-            >Read Cloudflare’s indexing guide ↗</a
-          >
-        </div>
       </section>
+      <aside class="tradeoff">
+        <span class="eyebrow">A Note on Indexes</span>
+        <p>
+          An index can reduce reads, but adds storage and work when data
+          changes. These results describe a synthetic read workload, not
+          production savings or a spending cap.
+        </p>
+        <a
+          href="https://developers.cloudflare.com/d1/best-practices/use-indexes/"
+          >Cloudflare’s Indexing Guide <span aria-hidden="true">↗</span></a
+        >
+      </aside>
     </main>
-    <footer>
-      <a class="brand" href="https://bhavyakumar.ca">Built by Bhavya Kumar ↗</a
-      ><span>TypeScript · Cloudflare Workers · D1</span
-      ><a
-        href="https://github.com/Bhavya2025/d1-query-budget"
-        target="_blank"
-        rel="noopener"
-        >Read the source ↗</a
+    <footer class="wrap">
+      <a href="https://bhavyakumar.ca"
+        >An experiment by <strong>Bhavya Kumar</strong>
+        <span aria-hidden="true">↗</span></a
+      ><span>TypeScript / Workers / D1</span
+      ><a href="https://github.com/Bhavya2025/d1-query-budget"
+        >Open Source <span aria-hidden="true">↗</span></a
       >
     </footer>
   </body>
