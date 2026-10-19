@@ -1,0 +1,25 @@
+name: Query budget checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx wrangler deploy --dry-run --outdir .data/build
+      - name: Summarize what this check proves
+        run: |
+          echo '## Query budget verification' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Tests validate the evaluator, HTTP input boundaries, CLI exit codes, and captured remote D1 reports.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No Cloudflare secrets are used. This workflow does not run changed pull-request queries against D1.' >> "$GITHUB_STEP_SUMMARY"

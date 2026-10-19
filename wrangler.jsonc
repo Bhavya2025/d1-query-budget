@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "d1-query-budget",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-19",
+  "workers_dev": true,
+  "assets": { "directory": "./public", "run_worker_first": ["/api/*"] },
+  "version_metadata": { "binding": "VERSION" },
+  "ratelimits": [
+    { "name": "DEMO_LIMITER", "namespace_id": "2026101901", "simple": { "limit": 12, "period": 60 } }
+  ],
+  "vars": { "EXECUTION_MODE": "remote" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "d1-query-budget-demo",
+      "database_id": "ad9de4ef-cb70-4ef5-a570-9fef86b6b1bb"
+    }
+  ]
+}

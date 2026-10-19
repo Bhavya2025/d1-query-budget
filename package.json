@@ -1,0 +1,24 @@
+{
+  "name": "d1-query-budget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Measured D1 query comparisons with correctness and row-read budgets.",
+  "scripts": {
+    "dev": "wrangler dev --var EXECUTION_MODE:local",
+    "deploy": "wrangler deploy",
+    "seed:generate": "tsx scripts/seed.ts",
+    "seed:local": "npm run seed:generate && wrangler d1 execute d1-query-budget-demo --local --file=.data/seed.sql",
+    "seed:remote": "npm run seed:generate && wrangler d1 execute d1-query-budget-demo --remote --file=.data/seed.sql",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "tsx scripts/check.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261019.1",
+    "@types/node": "26.6.5",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "wrangler": "4.151.2"
+  }
+}

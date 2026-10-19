@@ -1,0 +1,335 @@
+{
+  "version": 1,
+  "scenario": "missing-index",
+  "measuredAt": "2026-10-19T20:57:58.887Z",
+  "mode": "remote",
+  "revision": "99869cb0-4ca2-4154-b563-cc197aef2bcd",
+  "dataset": {
+    "version": "merchant-orders-v1",
+    "rowsPerTable": 1000,
+    "merchants": 10,
+    "seedHash": "37ac57dfb3cf24b7be3f1b9e4e08617f018957cc02d68ed0d610ff0bcbf038fe"
+  },
+  "policy": {
+    "maxRowsRead": 100
+  },
+  "baseline": {
+    "sql": "SELECT order_id, merchant_id, created_at, total_cents FROM orders_indexed WHERE merchant_id = ? ORDER BY created_at DESC, order_id DESC LIMIT 20",
+    "params": [
+      1
+    ],
+    "results": [
+      {
+        "order_id": 991,
+        "merchant_id": 1,
+        "created_at": 1735709400,
+        "total_cents": 1130
+      },
+      {
+        "order_id": 981,
+        "merchant_id": 1,
+        "created_at": 1735709160,
+        "total_cents": 14760
+      },
+      {
+        "order_id": 971,
+        "merchant_id": 1,
+        "created_at": 1735708980,
+        "total_cents": 13390
+      },
+      {
+        "order_id": 961,
+        "merchant_id": 1,
+        "created_at": 1735708800,
+        "total_cents": 12020
+      },
+      {
+        "order_id": 951,
+        "merchant_id": 1,
+        "created_at": 1735708560,
+        "total_cents": 10650
+      },
+      {
+        "order_id": 941,
+        "merchant_id": 1,
+        "created_at": 1735708380,
+        "total_cents": 9280
+      },
+      {
+        "order_id": 931,
+        "merchant_id": 1,
+        "created_at": 1735708200,
+        "total_cents": 7910
+      },
+      {
+        "order_id": 921,
+        "merchant_id": 1,
+        "created_at": 1735707960,
+        "total_cents": 6540
+      },
+      {
+        "order_id": 911,
+        "merchant_id": 1,
+        "created_at": 1735707780,
+        "total_cents": 5170
+      },
+      {
+        "order_id": 901,
+        "merchant_id": 1,
+        "created_at": 1735707600,
+        "total_cents": 3800
+      },
+      {
+        "order_id": 891,
+        "merchant_id": 1,
+        "created_at": 1735707360,
+        "total_cents": 2430
+      },
+      {
+        "order_id": 881,
+        "merchant_id": 1,
+        "created_at": 1735707180,
+        "total_cents": 1060
+      },
+      {
+        "order_id": 871,
+        "merchant_id": 1,
+        "created_at": 1735707000,
+        "total_cents": 14690
+      },
+      {
+        "order_id": 861,
+        "merchant_id": 1,
+        "created_at": 1735706760,
+        "total_cents": 13320
+      },
+      {
+        "order_id": 851,
+        "merchant_id": 1,
+        "created_at": 1735706580,
+        "total_cents": 11950
+      },
+      {
+        "order_id": 841,
+        "merchant_id": 1,
+        "created_at": 1735706400,
+        "total_cents": 10580
+      },
+      {
+        "order_id": 831,
+        "merchant_id": 1,
+        "created_at": 1735706160,
+        "total_cents": 9210
+      },
+      {
+        "order_id": 821,
+        "merchant_id": 1,
+        "created_at": 1735705980,
+        "total_cents": 7840
+      },
+      {
+        "order_id": 811,
+        "merchant_id": 1,
+        "created_at": 1735705800,
+        "total_cents": 6470
+      },
+      {
+        "order_id": 801,
+        "merchant_id": 1,
+        "created_at": 1735705560,
+        "total_cents": 5100
+      }
+    ],
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "ENAM",
+      "served_by_colo": "ORD",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.9717
+      },
+      "duration": 0.9717,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 94208,
+      "rows_read": 20,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "plan": [
+      {
+        "id": 5,
+        "parent": 0,
+        "notused": 93,
+        "detail": "SEARCH orders_indexed USING INDEX idx_merchant_recent (merchant_id=?)"
+      }
+    ]
+  },
+  "candidate": {
+    "sql": "SELECT order_id, merchant_id, created_at, total_cents FROM orders_unindexed WHERE merchant_id = ? ORDER BY created_at DESC, order_id DESC LIMIT 20",
+    "params": [
+      1
+    ],
+    "results": [
+      {
+        "order_id": 991,
+        "merchant_id": 1,
+        "created_at": 1735709400,
+        "total_cents": 1130
+      },
+      {
+        "order_id": 981,
+        "merchant_id": 1,
+        "created_at": 1735709160,
+        "total_cents": 14760
+      },
+      {
+        "order_id": 971,
+        "merchant_id": 1,
+        "created_at": 1735708980,
+        "total_cents": 13390
+      },
+      {
+        "order_id": 961,
+        "merchant_id": 1,
+        "created_at": 1735708800,
+        "total_cents": 12020
+      },
+      {
+        "order_id": 951,
+        "merchant_id": 1,
+        "created_at": 1735708560,
+        "total_cents": 10650
+      },
+      {
+        "order_id": 941,
+        "merchant_id": 1,
+        "created_at": 1735708380,
+        "total_cents": 9280
+      },
+      {
+        "order_id": 931,
+        "merchant_id": 1,
+        "created_at": 1735708200,
+        "total_cents": 7910
+      },
+      {
+        "order_id": 921,
+        "merchant_id": 1,
+        "created_at": 1735707960,
+        "total_cents": 6540
+      },
+      {
+        "order_id": 911,
+        "merchant_id": 1,
+        "created_at": 1735707780,
+        "total_cents": 5170
+      },
+      {
+        "order_id": 901,
+        "merchant_id": 1,
+        "created_at": 1735707600,
+        "total_cents": 3800
+      },
+      {
+        "order_id": 891,
+        "merchant_id": 1,
+        "created_at": 1735707360,
+        "total_cents": 2430
+      },
+      {
+        "order_id": 881,
+        "merchant_id": 1,
+        "created_at": 1735707180,
+        "total_cents": 1060
+      },
+      {
+        "order_id": 871,
+        "merchant_id": 1,
+        "created_at": 1735707000,
+        "total_cents": 14690
+      },
+      {
+        "order_id": 861,
+        "merchant_id": 1,
+        "created_at": 1735706760,
+        "total_cents": 13320
+      },
+      {
+        "order_id": 851,
+        "merchant_id": 1,
+        "created_at": 1735706580,
+        "total_cents": 11950
+      },
+      {
+        "order_id": 841,
+        "merchant_id": 1,
+        "created_at": 1735706400,
+        "total_cents": 10580
+      },
+      {
+        "order_id": 831,
+        "merchant_id": 1,
+        "created_at": 1735706160,
+        "total_cents": 9210
+      },
+      {
+        "order_id": 821,
+        "merchant_id": 1,
+        "created_at": 1735705980,
+        "total_cents": 7840
+      },
+      {
+        "order_id": 811,
+        "merchant_id": 1,
+        "created_at": 1735705800,
+        "total_cents": 6470
+      },
+      {
+        "order_id": 801,
+        "merchant_id": 1,
+        "created_at": 1735705560,
+        "total_cents": 5100
+      }
+    ],
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "ENAM",
+      "served_by_colo": "ORD",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.4977
+      },
+      "duration": 0.4977,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 94208,
+      "rows_read": 1100,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "plan": [
+      {
+        "id": 4,
+        "parent": 0,
+        "notused": 115,
+        "detail": "SCAN orders_unindexed"
+      },
+      {
+        "id": 20,
+        "parent": 0,
+        "notused": 0,
+        "detail": "USE TEMP B-TREE FOR ORDER BY"
+      }
+    ]
+  },
+  "verdict": {
+    "status": "fail",
+    "code": "budget-exceeded",
+    "message": "Same results, but the candidate exceeds the 100-row read budget.",
+    "resultsEqual": true,
+    "readRatio": 55
+  }
+}
