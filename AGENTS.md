@@ -4,6 +4,8 @@ Read README.md and plans/mvp-plan.md before implementation. Until the user appro
 
 Keep the first release small. Use synthetic data, remain on Cloudflare's Free plan, explain meaningful decisions, and verify reported results. Never describe local emulation or recorded measurements as a fresh remote D1 run.
 
+Keep all project files inside this project folder, including plans, research, screenshots, and exported reports. Store browser-exported reports under evidence/downloads/.
+
 ## Agent skills
 
 ### Issue tracker

@@ -4,6 +4,7 @@
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-19",
   "workers_dev": true,
+  "routes": [{ "pattern": "d1.bhavyakumar.ca", "custom_domain": true }],
   "assets": { "directory": "./public", "run_worker_first": ["/api/*"] },
   "version_metadata": { "binding": "VERSION" },
   "ratelimits": [

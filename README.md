@@ -2,7 +2,7 @@
 
 **Same results. Very different database work.**
 
-[Live experiment](https://d1-query-budget.bhavyakumar-bkb.workers.dev) · [How it works](docs/architecture.md) · [Measured evidence](evidence/README.md)
+[Live experiment](https://d1.bhavyakumar.ca) · [How it works](docs/architecture.md) · [Measured evidence](evidence/README.md)
 
 A TypeScript experiment that measures Cloudflare D1 row reads, checks full result correctness, and rejects queries that exceed a declared budget. Run three scenarios in the browser, inspect the SQL and query plans, then download a report and verify it with the CLI.
 
@@ -16,7 +16,7 @@ Measured October 19, 2026 on 1,000 synthetic orders across 10 merchants. The mis
 
 ## Try it
 
-1. Open the [demo](https://d1-query-budget.bhavyakumar-bkb.workers.dev).
+1. Open the [demo](https://d1.bhavyakumar.ca).
 2. Run **Missing index**. Both versions return the same orders, but the unindexed query exceeds the budget.
 3. Run **Unchanged query** to see the passing control.
 4. Run **Cheap but wrong** to see why fewer reads alone cannot earn a pass.
@@ -49,7 +49,7 @@ The checker exits **0** for pass, **1** for a rejected comparison, and **2** for
 
 1. Log in with `npx wrangler login`.
 2. Create your own dedicated database with `npx wrangler d1 create d1-query-budget-demo`.
-3. Replace `database_id` in `wrangler.jsonc` with **your** new database ID. Choose a unique Worker name and rate-limiter namespace if needed.
+3. Replace `database_id` in `wrangler.jsonc` with **your** new database ID. Remove `routes` to use only your workers.dev address, or replace its hostname with a domain in your Cloudflare account. Choose a unique Worker name and rate-limiter namespace if needed.
 4. Run `npm run seed:remote`, then `npm run deploy`.
 
 **Seed only the dedicated demo database.** The seed script replaces its three fixture tables. Never target a production database. Seeding uses roughly 3,014 written rows in our captured setup, plus reads. Account allowances are shared; check your available Free-plan limits before seeding repeatedly. No paid product is required.
